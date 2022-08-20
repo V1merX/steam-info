@@ -119,7 +119,7 @@ class User
     {
         $url = file_get_contents("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" . $this->webapikey . "&steamid=" . $this->steamid64 . '&format=json');
         $content = json_decode($url, true);
-        $friends = (empty($content['response'])) ? 'Друзей не найдено' : $content['response'];
+        $friends = (empty($content['response'])) ? 'Игр не найдено' : $content['response'];
         return $friends;
     }
 }
