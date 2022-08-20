@@ -11,7 +11,7 @@ class User
     {
         $this->webapikey = $webapikey;
         $this->steamid64 = $steamid64;
-        $this->url = file_get_contents("https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" . $this->webapikey . "&steamids=" . $this->steamid64);
+        $this->url = file_get_contents("http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=" . $this->webapikey . "&steamids=" . $this->steamid64);
     }
 
     /**
@@ -45,7 +45,7 @@ class User
 
     public function getST3()
     {
-        $steamid32 = $this->st64to32();
+        $steamid32 = $this->getST32();
         if (preg_match('/^STEAM_1\:1\:(.*)$/', $steamid32, $res)) {
 
             $steamid3 = '[U:1:';
@@ -93,5 +93,33 @@ class User
         $content = json_decode($this->url, true);
         $profileurl = (empty($content['response']['players'][0]['profileurl'])) ? 'Незнакомец' : $content['response']['players'][0]['profileurl'];
         return $profileurl;
+    }
+
+    /**
+     * 
+     * Get User Friends
+     * 
+     */
+
+    public function getFriends() 
+    {
+        $url = file_get_contents("http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=" . $this->webapikey . "&steamid=" . $this->steamid64 . '&relationship=friend');
+        $content = json_decode($url, true);
+        $friends = (empty($content['friendslist']['friends'])) ? 'Друзей не найдено' : $content['friendslist']['friends'];
+        return $friends;
+    }
+
+    /**
+     * 
+     * Get User Games
+     * 
+     */
+
+    public function getGames() 
+    {
+        $url = file_get_contents("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=" . $this->webapikey . "&steamid=" . $this->steamid64 . '&format=json');
+        $content = json_decode($url, true);
+        $friends = (empty($content['response'])) ? 'Друзей не найдено' : $content['response'];
+        return $friends;
     }
 }
